@@ -1,5 +1,9 @@
-
-<table>
+{% extends "blog/layout.html" %}
+    {% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+<table class="table table-bordered table-hover">
 	<tbody>
 		{% for post in post_list %}
 		<tr>
@@ -12,6 +16,10 @@
 		{% endfor %}
 	</tbody>
 </table>
-
+			<a href="{% url "blog:post_new" %}" class="btn btn-primary">새 글 쓰기</a>
+		</div>
+	</div>
+</div>
 <hr/>
-<a href="{% url "blog:post_new" %}">새 글 쓰기</a>
+
+	{% endblock %}
