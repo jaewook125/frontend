@@ -5,6 +5,10 @@ from .models import Post, Comment
 
 index = ListView.as_view(model=Post, template_name='blog/index.html')
 
+
+jquery = ListView.as_view(model=Post, template_name='blog/jquery.html')
+
+
 post_new = CreateView.as_view(model=Post, fields='__all__')
 
 post_detail = DetailView.as_view(model=Post)
