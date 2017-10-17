@@ -3,7 +3,12 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from .models import Post, Comment
 
-index = ListView.as_view(model=Post, template_name='blog/index.html')
+class PostListView(ListView):
+	model = Post
+	template_name = 'blog/index.html'
+	paginate_by= 10
+
+index = PostListView.as_view()
 
 
 jquery = ListView.as_view(model=Post, template_name='blog/jquery.html')
