@@ -1,3 +1,5 @@
+import time
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, resolve_url
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
@@ -7,6 +9,18 @@ class PostListView(ListView):
 	model = Post
 	template_name = 'blog/index.html'
 	paginate_by= 10
+
+	def get_template_names(self):
+		if self.request.is_ajax():
+			#ajax요청이면 참 아니면 거짓을 리턴
+			return ['blog/_post_list.html']
+		return ['blog/index.html']
+
+	# def get_context_data(self, **kwargs):
+	# 	context = super().get_context_data(**kwargs)
+	# 	time.sleep(3)
+	# 	return context
+	# 딜레이 3초주는 함수
 
 index = PostListView.as_view()
 
@@ -64,3 +78,15 @@ class CommentDeleteView(DeleteView):
 		#클래스기반 뷰는 셀프.오브젝트에 있고 이것의 포스트로 이동
 
 comment_delete = CommentDeleteView.as_view()
+
+def post_list_json(request):
+	qs = Post.objects.all()
+
+	post_list = []
+	for post in qs:
+		post_list.append({'id': post.id, 'title': post.title, 'content': post.content})
+
+	return JsonResponse(post_list, safe=False)
+	#JsonResponse는 사전타입만 받는데 
+	#post_list는 사전타입이 아니기때문에 사전타입이 아닌데 
+	#세잎이 참이면 타임에러가 발생 리스트를 넘길거기떄문에 세이프=거짓
