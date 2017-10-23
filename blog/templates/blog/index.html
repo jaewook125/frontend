@@ -3,34 +3,70 @@
   {% block extra_body %}
   <script>
 $(function(){
-	$('#page-2-btn').click(function(){
-			$.get('?page=2')
-				.done(function(html){
-					console.log(html);
-					$('#post-list-wrapper').html(html);
-					// 앞에있는 html은 함수명이고 뒤에있는건 문자열(인자를 받은)
-					var state_obj = {}; // pushState 후에 history.state로 접근 가능
-					var title = "";
-					var url = "?page=2"; // 이동할 URL
-					history.pushState(state_obj, title, url);
-				})
-				.fail(function(){
-					console.log('fail');
-				}).
-				always(function(){
-					console.log('always');
-				});
-		return false;
+	var $win = $(window);
+	var is_loading = false;
+	var current_page = null;
+	// 매 화면 스크롤마다 호출
+
+	var load_more = function(){
+		if ( ! is_loading ){
+			//var search_params = new URLSearchParams(window.location.search); 
+			//현재 페이지의 GET인자를 가공
+			//var current_page = parseInt(search_params.get('page')) || 1;
+			//GET인자 page를 획득하고 없으면 1을 반환
+				var next_page = (current_page || 0) + 1;
+					//current_page 가 값이 null이면 1로 처리한다.
+				var next_page_url = '?page=' + (next_page + 1);
+					//다음 페이지를 요청하기 위한 URL생성
+
+				is_loading = true;
+
+				$.get(next_page_url).
+					done(function(html){
+						$('#post_list tbody').append(html);
+						current_page = next_page;
+							//history.pushState({}, '',next_page_url);
+							// 주소 변경
+					})
+					.fail(function(xhr, textStatus, error){
+							console.log(textStatus);
+					})
+					.always(function(){
+							console.log("always");
+							is_loading = false;
+					});
+			}
+
+	};
+
+	$win.scroll(function(){
+		// 문서의 끝에 도달했는가?
+		var diff = $(document).height() - $win.height();
+		if ( (!is_loading) && diff == $win.scrollTop() ) {
+			console.log("바닥에 왔음.")
+			load_more();
+			
+		} 
 	});
-})
+
+	$('#load-more-btn').click(load_more);
+});
 </script>
   {% endblock %}
 
   {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="col-sm-12" id="post-list-wrapper">
-			{% include "blog/_post_list.html" %}
+		<div class="col-sm-12">
+			<table class="table table-bordered table-hover" id="post_list">
+				<tbody>
+					{% include "blog/_post_list.html" %}
+				</tbody>
+			</table>
+				<a class="btn btn-primary" id="load-more-btn">Load More...</a>
+			<hr/>
+				<a href="{% url "blog:post_new" %}" class="btn btn-primary">새 글 쓰기</a>
+
 		</div>
 	</div>
 </div>
