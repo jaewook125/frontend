@@ -5,6 +5,7 @@ from django.template.defaultfilters import truncatewords
 #템플릿 태그 함수(일정 글자만 보여주기)
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from .forms import CommentForm
 from .models import Post, Comment
 from rest_framework.renderers import JSONRenderer
 from .serializers import PostSerializer
@@ -58,7 +59,9 @@ post_delete = PostDeleteView.as_view()
 
 class CommentCreateView(CreateView):
 	model = Comment
-	fields = ['message']
+	form_class = CommentForm
+	#폼 커스텀 지정
+	# fields = ['message'] 폼클래스 내부를 지정하지 않았을떄 사용
 	# 필드는 메세지만 나타낸다
 
 	def form_valid(self, form):
