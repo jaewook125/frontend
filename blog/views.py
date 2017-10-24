@@ -1,6 +1,8 @@
 import time
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, resolve_url
+from django.template.defaultfilters import truncatewords
+#템플릿 태그 함수(일정 글자만 보여주기)
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from .models import Post, Comment
@@ -32,7 +34,19 @@ jquery = ListView.as_view(model=Post, template_name='blog/jquery.html')
 
 post_new = CreateView.as_view(model=Post, fields='__all__')
 
-post_detail = DetailView.as_view(model=Post)
+class PostDetailView(DetailView):
+	model = Post
+
+	def render_to_response(self, context):
+		if self.request.is_ajax():
+			return JsonResponse({
+					'title': self.object.title,
+					'summary' : truncatewords(self.object.content, 50),
+				}) #truncatewords템플릿태그 함수(글자 수 제한)
+		# 템플릿 랜더링
+		return super().render_to_response(context)
+
+post_detail = PostDetailView.as_view()
 
 post_edit = UpdateView.as_view(model=Post, fields='__all__')
 
