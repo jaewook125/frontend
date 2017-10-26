@@ -31,6 +31,8 @@ $(function(){
 			});
 		// $('#comment-form-modal').modal();
 	});
+
+
 	$(document).on('submit', '#comment-form-modal form', function(e){
 		e.preventDefault();
 
@@ -40,13 +42,10 @@ $(function(){
 
 		$submit.prop('disabled', true);
 
-		var url = $form.attr('action');
-		// 주소를 어디로 쏠건지 정함
-		var data = $form.serialize();
-		// url encoded된 데이터
+		$form.ajaxSubmit({
+			success: function(response, statusText, xhr, $form){
+				var html =response;
 
-		$.post(url, data)
-			.done(function(html){
 				var $resp = $(html);
 				var target_id = $form.data('target-id');
 
@@ -67,13 +66,18 @@ $(function(){
 					$('#comment-form-modal').modal('hide');
 					$form[0].reset();
 				}
-			})
-			.fail(function(xhr, textStatus, error){
-				alert('failed : '+ error)
-			})
-			.always(function(){
-				$submit.prop('disabled', false);
-			});
+			},
+			error: function(xhr,textStatus,error){
+				alert('failed :'+error);
+			},
+			comlpete: function(xhr,textStatus){
+
+			}
+		});
+
+
+
+
 	});
 
 	$(document).on('click','.ajax-post-confirm', function(e){
