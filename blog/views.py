@@ -47,6 +47,12 @@ class PostDetailView(DetailView):
 		# 템플릿 랜더링
 		return super().render_to_response(context)
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['comment_form'] = CommentForm()
+		#모델폼(CommentForm)의 인스턴스를 생성해서 넘겨줬다
+		return context
+
 post_detail = PostDetailView.as_view()
 
 post_edit = UpdateView.as_view(model=Post, fields='__all__')
