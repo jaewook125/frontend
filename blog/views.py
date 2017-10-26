@@ -76,29 +76,23 @@ class CommentCreateView(CreateView):
 		comment.post = get_object_or_404(Post, pk=self.kwargs['post_pk'])
 		# kwargs(키워드 아규먼츠는) url 인자부분이다
 		response = super().form_valid(form)
-
-		if self.request.is_ajax():
-			# ajax일때는 json응답을 주겠다.
-			return JsonResponse({
-					'id': comment.id,
-					'message': comment.message,
-					'updated_at':comment.updated_at,
-					'edit_url' : resolve_url('blog:comment_edit', comment.post.pk, comment.pk),
-					'delete_url' : resolve_url('blog:comment_delete', comment.post.pk, comment.pk),
-				})
-
-		return response #url redirect 응답
-
-	def form_invalid(self, form):
-		if self.request.is_ajax():
-			return JsonResponse(dict(form.errors, is_success=False))
-		return super().form_invalid(form)
-
-
+		#url redirect 응답
+		
+		if self.request.is_ajax(): # render_to_response가 호출되지 않습니다.
+			return render(self.request, 'blog/_comment.html', {
+				'comment': comment,
+			})
+		return response
 	def get_success_url(self):
 		#get_success_url는 뷰 전용 absolute는 모델 전용
 		return resolve_url(self.object.post)
 		#클래스기반 뷰는 셀프.오브젝트에 있고 이것의 포스트로 이동
+
+	def get_template_names(self):
+		if self.request.is_ajax():
+			return ['blog/_comment_form.html']
+		return ['blog/comment_form.html']
+
 comment_new = CommentCreateView.as_view()
 
 class CommentUpdateView(UpdateView):
