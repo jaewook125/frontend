@@ -12,6 +12,10 @@ $(function(){
 
 		var $form = $(this);
 		// this가 현재 form 엘리먼트를 지칭하는것 form에 대헤 맵핑
+		var $submit = $form.find('[type=submit]');
+
+		$submit.prop('disabled', true);
+
 		var url = $form.attr('action');
 		// 주소를 어디로 쏠건지 정함
 		var data = $form.serialize();
@@ -33,6 +37,9 @@ $(function(){
 			})
 			.fail(function(xhr, textStatus, error){
 				alert('failed : '+ error)
+			})
+			.always(function(){
+				$submit.prop('disabled', false);
 			});
 	});
 
@@ -42,6 +49,8 @@ $(function(){
 		var url = $(this).attr('href');
 		var target_id = $(this).data('target-id');
 		var message = $(this).data('message');
+
+
 
 		if ( confirm(message)){
 			$.post(url)
