@@ -77,7 +77,7 @@ class CommentCreateView(CreateView):
 		# kwargs(키워드 아규먼츠는) url 인자부분이다
 		response = super().form_valid(form)
 		#url redirect 응답
-		
+
 		if self.request.is_ajax(): # render_to_response가 호출되지 않습니다.
 			return render(self.request, 'blog/_comment.html', {
 				'comment': comment,
@@ -92,6 +92,7 @@ class CommentCreateView(CreateView):
 		if self.request.is_ajax():
 			return ['blog/_comment_form.html']
 		return ['blog/comment_form.html']
+		#템플릿 구별 함수
 
 comment_new = CommentCreateView.as_view()
 
@@ -99,10 +100,24 @@ class CommentUpdateView(UpdateView):
 	model = Comment
 	fields = ['message']
 
-	def get_success_url(self):
+	def form_valid(self, form):
+		response = super().form_valid(form)
+		if self.request.is_ajax(): # render_to_response가 호출되지 않습니다.
+			return render(self.request, 'blog/_comment.html', {
+				'comment': self.object,
+			})
+		return response
+
+	def get_success_url(self):	
 		#get_success_url는 뷰 전용 absolute는 모델 전용
 		return resolve_url(self.object.post)
 		#클래스기반 뷰는 셀프.오브젝트에 있고 이것의 포스트로 이동
+
+	def get_template_names(self):
+		if self.request.is_ajax():
+			return ['blog/_comment_form.html']
+		return ['blog/comment_form.html']
+		#템플릿 구별 함수
 
 comment_edit = CommentUpdateView.as_view()
 
