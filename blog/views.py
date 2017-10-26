@@ -83,6 +83,7 @@ class CommentCreateView(CreateView):
 				'comment': comment,
 			})
 		return response
+
 	def get_success_url(self):
 		#get_success_url는 뷰 전용 absolute는 모델 전용
 		return resolve_url(self.object.post)
@@ -98,7 +99,7 @@ comment_new = CommentCreateView.as_view()
 
 class CommentUpdateView(UpdateView):
 	model = Comment
-	fields = ['message']
+	fields = ['message','photo']
 
 	def form_valid(self, form):
 		response = super().form_valid(form)

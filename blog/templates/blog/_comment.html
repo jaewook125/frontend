@@ -1,6 +1,9 @@
 				
 
 				<li id="comment-{{ comment.pk }}">
+				{% if comment.photo %}
+					<img src="{{ comment.photo.url }}" style="width: 100px;" />
+				{% endif %}
 				{{ comment.message }}
 				&dash; 
 				<a href="{% url "blog:comment_edit" comment.post.pk comment.pk %}" class="comment-form-btn" data-target-id="comment-{{ comment.pk }}">
