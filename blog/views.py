@@ -71,11 +71,29 @@ class CommentCreateView(CreateView):
 	# 필드는 메세지만 나타낸다
 
 	def form_valid(self, form):
-		commit = form.save(commit=False)
+		comment = form.save(commit=False)
 		# 현재 오브젝트를 하나 받는다
-		commit.post = get_object_or_404(Post, pk=self.kwargs['post_pk'])
+		comment.post = get_object_or_404(Post, pk=self.kwargs['post_pk'])
 		# kwargs(키워드 아규먼츠는) url 인자부분이다
-		return super().form_valid(form)
+		response = super().form_valid(form)
+
+		if self.request.is_ajax():
+			# ajax일때는 json응답을 주겠다.
+			return JsonResponse({
+					'id': comment.id,
+					'message': comment.message,
+					'updated_at':comment.updated_at,
+					'edit_url' : resolve_url('blog:comment_edit', comment.post.pk, comment.pk),
+					'delete_url' : resolve_url('blog:comment_delete', comment.post.pk, comment.pk),
+				})
+
+		return response #url redirect 응답
+
+	def form_invalid(self, form):
+		if self.request.is_ajax():
+			return JsonResponse(dict(form.errors, is_success=False))
+		return super().form_invalid(form)
+
 
 	def get_success_url(self):
 		#get_success_url는 뷰 전용 absolute는 모델 전용

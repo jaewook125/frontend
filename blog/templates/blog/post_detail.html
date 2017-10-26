@@ -4,6 +4,47 @@
 {% block extra_body %}
 <script>
 $(function(){
+	$('#comment-form').submit(function(e){
+		e.preventDefault();
+
+		var $form = $(this);
+		// this가 현재 form 엘리먼트를 지칭하는것 form에 대헤 맵핑
+		var url = $form.attr('action');
+		// 주소를 어디로 쏠건지 정함
+		var data = $form.serialize();
+		// url encoded된 데이터
+
+		$.post(url, data)
+			.done(function(obj){
+				console.log("----done----");
+				console.log(obj);
+
+				if ( obj.is_success === false ){
+					alert(obj.message);
+					// 오류를 alert창으로 보여줌
+				}
+				else {
+					$('#comment-list').prepend([
+						'<li id="comment-' + obj.id + '">',
+						obj.message,
+						'&dash;',
+						'<a href="' + obj.edit_url + '">',
+							'<small>' + obj.updated_at + '</small>',
+						'</a>',
+						'<a href="' + obj.delete_url + '" class="ajax-post-confirm" data-target-id="comment-' + obj.id + '" data-message="정말 삭제하시겠습니까?">',
+							'<small>삭제</small>',
+						'</a>',
+						'</li>'
+						].join(''));
+					
+						$form[0].reset();
+				}
+			})
+			.fail(function(xhr, textStatus, error){
+				alert('failed : '+ error)
+			});
+	});
+
 	$(document).on('click','.ajax-post-confirm', function(e){
 		e.preventDefault();
 
@@ -34,7 +75,7 @@ $(function(){
 			{{ post.content|linebreaks }}
 
 			<hr/>
-			<form action="{% url "blog:comment_new" post.pk %}" method="post">
+			<form id="comment-form" action="{% url "blog:comment_new" post.pk %}" method="post">
 				<!-- 현재는 detail인데 comment_new에서 처리하기위해 post요청을 넘겨줘야함
 				다른 url로 보낼거기 떄문에 -->
 				{% csrf_token %}
@@ -44,7 +85,7 @@ $(function(){
 
 			<!-- <a href="{% url "blog:comment_new" post.pk %}" class="btn btn-primary btn-block">댓글 쓰기</a> -->
 
-			<ul>
+			<ul id='comment-list'>
 			{% for comment in post.comment_set.all %}
 				<li id="comment-{{ comment.pk }}">
 				{{ comment.message }}
