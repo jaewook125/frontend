@@ -1,10 +1,18 @@
 				
 {% load thumbnail %}
-				<li id="comment-{{ comment.pk }}">
+
+				<div id="comment-{{ comment.pk }}" class="media">
 				{% if comment.photo %}
-					<img src="{% thumbnail comment.photo 100x100 crop %}" />
+				<div class="media-left">
+					<a>
+					<img src="{% thumbnail comment.photo 100x100 crop %}" class="media-object"/>
+				</a>
+				</div>
 				{% endif %}
-				{{ comment.message }}
+				<div class="media-body">
+    				<!-- <h4 class="media-heading">Media heading</h4> -->
+  				
+				<p>{{ comment.message }}</p>
 				&dash; 
 				<a href="{% url "blog:comment_edit" comment.post.pk comment.pk %}" class="comment-form-btn" data-target-id="comment-{{ comment.pk }}">
 						<small>{{ comment.updated_at }}</small>
@@ -17,4 +25,5 @@
 					<small>삭제</small>
 				</a>
 
-				</li>
+				</div>
+				</div>

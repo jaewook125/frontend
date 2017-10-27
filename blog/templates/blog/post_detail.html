@@ -116,11 +116,11 @@ $(function(){
 			<a href="{% url "blog:comment_new" post.pk %}" 
 				class="comment-form-btn btn btn-primary btn-block">댓글 쓰기</a>
 
-			<ul id='comment-list'>
+			<div id='comment-list'>
 			{% for comment in post.comment_set.all %}
 				{% include "blog/_comment.html" %}
 			{% endfor %}
-			</ul>
+			</div>
 			<hr/>
 
 			<a href="{% url "blog:index" %}" class="btn btn-primary">목록</a>
