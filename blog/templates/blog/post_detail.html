@@ -99,6 +99,16 @@ $(function(){
 				});
 		}
 	});
+
+	$.get('{% url "blog:comment_list" post.pk %}')
+		.done(function(html){
+			$('#comment-list').html(html);
+			// 응답으로 html이 온다,온 html을 comment-list엘리먼트를 html로 대입하겠다
+		})
+		.fail(function(xhr, textStatus, error){
+			alert('failed :' + error)
+		});
+
 });
 </script>
 {% endblock %}
@@ -116,13 +126,9 @@ $(function(){
 			<a href="{% url "blog:comment_new" post.pk %}" 
 				class="comment-form-btn btn btn-primary btn-block">댓글 쓰기</a>
 
-			<div id='comment-list'>
-			{% for comment in post.comment_set.all %}
-				{% include "blog/_comment.html" %}
-			{% endfor %}
-			</div>
-			<hr/>
-
+				<div id='comment-list'></div>
+				<hr/>
+			
 			<a href="{% url "blog:index" %}" class="btn btn-primary">목록</a>
 			<a href="{% url "blog:post_edit" post.pk %}" class="btn btn-primary">수정</a>
 			<a href="{% url "blog:post_delete" post.pk %}" class="btn btn-danger">삭제</a>

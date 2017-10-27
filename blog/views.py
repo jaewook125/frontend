@@ -63,6 +63,18 @@ class PostDeleteView(DeleteView):
 
 post_delete = PostDeleteView.as_view()
 
+class CommentListView(ListView):
+	model = Comment
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		qs = qs.filter(post__id = self.kwargs['post_pk'])
+		#kwargs아규먼츠는 url을 알아보기쉽게 만들어옴
+		#쿼리셋 필터는 특정 포스팅에 대한 댓글을 가지고옴
+		return qs
+
+comment_list = CommentListView.as_view()
+
 class CommentCreateView(CreateView):
 	model = Comment
 	form_class = CommentForm

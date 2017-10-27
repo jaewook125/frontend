@@ -9,6 +9,7 @@ urlpatterns =[
 	url(r'^(?P<pk>\d+)/edit/$', views.post_edit, name='post_edit'),
 	url(r'^(?P<pk>\d+)/delete/$', views.post_delete, name='post_delete'),
 
+	url(r'^(?P<post_pk>\d+)/comment/$', views.comment_list, name='comment_list'),
 	url(r'^(?P<post_pk>\d+)/comment/new/$', views.comment_new, name='comment_new'),
 	url(r'^(?P<post_pk>\d+)/comment/(?P<pk>\d+)/edit/$', views.comment_edit, name='comment_edit'),
 	url(r'^(?P<post_pk>\d+)/comment/(?P<pk>\d+)/delete/$', views.comment_delete, name='comment_delete'),
