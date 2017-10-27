@@ -14,7 +14,8 @@
   				
 				<p>{{ comment.message }}</p>
 				&dash; 
-				<a href="{% url "blog:comment_edit" comment.post.pk comment.pk %}" class="comment-form-btn" data-target-id="comment-{{ comment.pk }}">
+				<a href="{% url "blog:comment_edit" comment.post.pk comment.pk %}" 
+				class="modal-form-btn" data-target-id="comment-{{ comment.pk }}">
 						<small>{{ comment.updated_at }}</small>
 				</a>
 
