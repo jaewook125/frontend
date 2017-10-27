@@ -100,13 +100,29 @@ $(function(){
 		}
 	});
 
+	$('#check-comment').click(function(e){
+		e.preventDefault();
+		// 누르면 결과값이 나옴
+		var comment_id = $('#comment-list .comment:first').data('comment-id');
+		// 코멘트의 처음에 데이터에 코멘트 아이디를 가지고옴
+		$.get('{% url "blog:comment_list" post.pk %}', {latest_comment_id:comment_id})
+			.done(function(html){
+				$('#comment-list').prepend(html);
+				// 코멘트 리스트 제일 상단에 올려놓는다
+			})
+			.fail(function(){
+				alert('failed : ' + error);
+			});
+		console.log(comment_id);
+	});
+
 	$.get('{% url "blog:comment_list" post.pk %}')
 		.done(function(html){
 			$('#comment-list').html(html);
 			// 응답으로 html이 온다,온 html을 comment-list엘리먼트를 html로 대입하겠다
 		})
 		.fail(function(xhr, textStatus, error){
-			alert('failed :' + error)
+			alert('failed :' + error);
 		});
 
 });
@@ -126,6 +142,7 @@ $(function(){
 			<a href="{% url "blog:comment_new" post.pk %}" 
 				class="comment-form-btn btn btn-primary btn-block">댓글 쓰기</a>
 
+			<a id="check-comment" class="btn btn-primary btn-block">새 댓글 체크</a>
 				<div id='comment-list'></div>
 				<hr/>
 			

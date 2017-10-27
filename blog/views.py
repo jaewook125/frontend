@@ -71,6 +71,13 @@ class CommentListView(ListView):
 		qs = qs.filter(post__id = self.kwargs['post_pk'])
 		#kwargs아규먼츠는 url을 알아보기쉽게 만들어옴
 		#쿼리셋 필터는 특정 포스팅에 대한 댓글을 가지고옴
+		latest_comment_id = self.request.GET.get('latest_comment_id', None)
+		#get인자로써 latest_comment_id가 있다면
+		if latest_comment_id:
+			# lt : less than 	< 작다
+			# gt : greater than > 크다
+			qs = qs.filter(id__gt=latest_comment_id)
+			# 아이디가 크면 리턴
 		return qs
 
 comment_list = CommentListView.as_view()
