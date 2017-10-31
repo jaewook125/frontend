@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<script src="http://www.chartjs.org/dist/2.7.0/Chart.bundle.js"></script>
+</head>
+	<body>
+	<canvas id="canvas"></canvas>
+		<script>
+		var chartData = {
+		labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+		datasets: [{
+		label: 'Dataset 1',
+			backgroundColor: "rgba(255, 99, 132, 0.5)",
+			borderColor: "rgba(255, 99, 132, 1)",
+			pointBackgroundColor: "rgba(255, 99, 132, 1)",
+			pointBorderColor: "#fff",
+			data: [
+				parseInt(Math.random() * 100), parseInt(Math.random() * 100), parseInt(Math.random() * 100), parseInt(Math.random() * 100),
+				parseInt(Math.random() * 100), parseInt(Math.random() * 100), parseInt(Math.random() * 100)
+			]
+		}]
+		};
+		window.onload = function() {
+		var ctx = document.getElementById('canvas').getContext('2d');
+		window.chart = new Chart(ctx, {
+		type: 'line',
+		data: chartData
+		});
+		};
+		</script>
+	</body>
+</html>
