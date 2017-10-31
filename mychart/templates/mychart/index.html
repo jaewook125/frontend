@@ -3,44 +3,28 @@
 <head>
 	<meta charset="utf-8" />
 	<script src="http://www.chartjs.org/dist/2.7.0/Chart.bundle.js"></script>
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 </head>
 	<body>
-		<h1>{{ comic.title }} 평점</h1>
-
-
 	<canvas id="canvas"></canvas>
-		<script>
-		var chartData = {
-		labels: [
-			{% for ep in comic.ep_list %}
-				'{{ ep.title }}'
-				{% if not forloop.last %},{% endif %}
-				// 현재루프의 마지막이 아닐때에만 ,를 한다
-			{% endfor %}
-		],
-		datasets: [{
-		label: 'Dataset 1',
-			backgroundColor: "rgba(255, 99, 132, 0.5)",
-			borderColor: "rgba(255, 99, 132, 1)",
-			pointBackgroundColor: "rgba(255, 99, 132, 1)",
-			pointBorderColor: "#fff",
-			data: [
-			{% for ep in comic.ep_list %}
-				'{{ ep.rating }}'
-				{% if not forloop.last %},{% endif %}
-				// 현재루프의 마지막이 아닐때에만 ,를 한다
-			{% endfor %}
 
-			]
-		}]
-		};
-		window.onload = function() {
-		var ctx = document.getElementById('canvas').getContext('2d');
-		window.chart = new Chart(ctx, {
-		type: 'bar',
-		data: chartData
+<script>
+$(function(){
+	$.get('{% url "data_json" %}')
+	// mychary data에서 응답을 받아오고
+		.done(function(chartdata){
+			//성공하면
+			var ctx = document.getElementById('canvas').getContext('2d');
+			//차트데이터를 참고해서 쓴다
+			window.chart = new Chart(ctx, {
+				type: 'bar',
+				data: chartdata
+			});
+		})
+		.fail(function(xhr, textStatus, error){
+			alert('failed :'+ error);
 		});
-		};
+});
 		</script>
 	</body>
 </html>
